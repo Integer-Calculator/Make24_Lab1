@@ -5,23 +5,46 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.support.design.widget.Snackbar;
 import android.widget.Button;
+import android.widget.Chronometer;
+
+import static android.content.ContentValues.TAG;
 
 
 public class MainActivity extends Activity {
 
+
+    TimerTask mTimerTask;
+    private Handler handler = new Handler();
+    ActivityMainBinding binding;
+    private int nCounter = 0;
+    Timer t = new Timer();
+    Boolean timerResume = false;
+    Chronometer cmTimer;
+    long elapsedTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        cmTimer = (Chronometer) findViewById(R.id.timer);
 
-        set_random();
+
+        //set_random();
+       //doTimerTask();
+        startNewGame();
+
 
         binding.number1.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -136,7 +159,10 @@ public class MainActivity extends Activity {
                            .setPositiveButton("Next Puzzle", new DialogInterface.OnClickListener() {
                                @Override
                                public void onClick(DialogInterface dialog, int which) {
-                                   //generateNewNumbers();
+                                   cmTimer.stop();
+                                   cmTimer.setText("00:00");
+                                   timerResume=false;
+                                   startNewGame();
                                }
                            }).show();
                 }
@@ -150,6 +176,7 @@ public class MainActivity extends Activity {
                 }
 
         });
+
 
 
     }
@@ -257,11 +284,7 @@ public class MainActivity extends Activity {
         }
 
 
-
-
-
-
-    void set_random()
+    void startNewGame()
     {
         // generate 4 random numbers
         ArrayList<Integer> list = new ArrayList<Integer>();
@@ -270,20 +293,74 @@ public class MainActivity extends Activity {
         }
         Collections.shuffle(list);
 
-
-        Button btn = (Button) findViewById(R.id.number_1);
-        btn.setText(String.valueOf(list.get(0)));
-
-
-        Button btn1 = (Button) findViewById(R.id.number_2);
-        btn1.setText(String.valueOf(list.get(1)));
-
-        Button btn2 = (Button) findViewById(R.id.number_3);
-        btn2.setText(String.valueOf(list.get(2)));
+        binding.number1.setText(String.valueOf(list.get(0)));
+        binding.number2.setText(String.valueOf(list.get(1)));
+        binding.number3.setText(String.valueOf(list.get(2)));
+        binding.number4.setText(String.valueOf(list.get(3)));
 
 
-        Button btn3 = (Button) findViewById(R.id.number_4);
-        btn3.setText(String.valueOf(list.get(3)));
+        cmTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            public void onChronometerTick(Chronometer arg0) {
+                if (!timerResume) {
+                    long minutes = ((SystemClock.elapsedRealtime() - cmTimer.getBase())/1000) / 60;
+                    long seconds = ((SystemClock.elapsedRealtime() - cmTimer.getBase())/1000) % 60;
+                    elapsedTime = SystemClock.elapsedRealtime();
+                    Log.d(TAG, "onChronometerTick: " + minutes + " : " + seconds);
+                } else {
+                    long minutes = ((elapsedTime - cmTimer.getBase())/1000) / 60;
+                    long seconds = ((elapsedTime - cmTimer.getBase())/1000) % 60;
+                    elapsedTime = elapsedTime + 1000;
+                    Log.d(TAG, "onChronometerTick: " + minutes + " : " + seconds);
+                }
+            }
+        });
+
+
+        if (!timerResume) {
+            cmTimer.setBase(SystemClock.elapsedRealtime());
+            cmTimer.start();
+        } else {
+            cmTimer.start();
+        }
 
     }
+
+
+/*
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.btnStart:
+                btnStart.setEnabled(false);
+                btnStop.setEnabled(true);
+
+                if (!resume) {
+                    cmTimer.setBase(SystemClock.elapsedRealtime());
+                    cmTimer.start();
+                } else {
+                    cmTimer.start();
+                }
+                break;
+
+            case R.id.btnStop:
+                btnStart.setEnabled(true);
+                btnStop.setEnabled(false);
+                cmTimer.stop();
+                cmTimer.setText("");
+                resume = true;
+                btnStart.setText("Resume");
+                break;
+
+            case R.id.btnReset:
+                cmTimer.stop();
+                cmTimer.setText("00:00");
+                resume = false;
+                btnStop.setEnabled(false);
+                break;
+        }
+    }
+    */
+
+
+
 }
+
