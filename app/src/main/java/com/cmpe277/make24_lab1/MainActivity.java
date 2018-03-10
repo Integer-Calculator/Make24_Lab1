@@ -259,7 +259,7 @@ public class MainActivity extends Activity {
 
 
 
-    }
+
 
     void set_random()
     {
