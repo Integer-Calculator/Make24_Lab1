@@ -14,9 +14,7 @@ import java.util.Collections;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import android.support.design.widget.Snackbar;
-import android.widget.Button;
 import android.widget.Chronometer;
 
 import static android.content.ContentValues.TAG;
@@ -40,9 +38,8 @@ public class MainActivity extends Activity {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         cmTimer = (Chronometer) findViewById(R.id.timer);
 
-
-        //set_random();
-       //doTimerTask();
+        //Set Succeeded Count to zero
+        binding.succeeded.setText("0");
         startNewGame();
 
 
@@ -151,6 +148,15 @@ public class MainActivity extends Activity {
                 String expression = binding.expressionView.getText().toString();
 
                if(evaluateExpression(expression)) {
+                   //Stop Timer
+                   cmTimer.stop();
+                   cmTimer.setText("00:00");
+                   timerResume=false;
+
+                   //Increment Succeeded
+                   int successCount = Integer.parseInt(binding.succeeded.getText().toString());
+                   binding.succeeded.setText(String.valueOf(++successCount));
+
                    //Show Bingo
                    new AlertDialog.Builder(MainActivity.this)
                            .setTitle("Bingo!!")
@@ -159,25 +165,21 @@ public class MainActivity extends Activity {
                            .setPositiveButton("Next Puzzle", new DialogInterface.OnClickListener() {
                                @Override
                                public void onClick(DialogInterface dialog, int which) {
-                                   cmTimer.stop();
-                                   cmTimer.setText("00:00");
-                                   timerResume=false;
                                    startNewGame();
                                }
                            }).show();
                 }
                 else {
-                   binding.expressionView.setText("FAILURE");
+                   int currentAttempts = Integer.parseInt(binding.attempts.getText().toString());
+                   binding.attempts.setText(String.valueOf(++currentAttempts));
                    //Show SnackBar
-                 // Snackbar snackbar = Snackbar
-                   //        .make( findViewById(android.R.id.content), "Incorrect", Snackbar.LENGTH_LONG);
-                  // snackbar.show();
+                  Snackbar snackbar = Snackbar
+                           .make(findViewById(android.R.id.content), "Incorrect. Please Try Again!!", Snackbar.LENGTH_LONG);
+                  snackbar.show();
                }
                 }
 
         });
-
-
 
     }
 
@@ -294,10 +296,19 @@ public class MainActivity extends Activity {
         Collections.shuffle(list);
 
         binding.number1.setText(String.valueOf(list.get(0)));
+        binding.number1.setEnabled(true);
         binding.number2.setText(String.valueOf(list.get(1)));
+        binding.number2.setEnabled(true);
         binding.number3.setText(String.valueOf(list.get(2)));
+        binding.number3.setEnabled(true);
         binding.number4.setText(String.valueOf(list.get(3)));
+        binding.number4.setEnabled(true);
 
+        //Reset Expression View
+        binding.expressionView.setText("");
+
+        //Reset Attempts
+        binding.attempts.setText("1");
 
         cmTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             public void onChronometerTick(Chronometer arg0) {

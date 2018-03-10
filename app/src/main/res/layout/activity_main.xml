@@ -189,7 +189,7 @@
                 android:visibility="visible" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/succeeded"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/textView7"
@@ -201,7 +201,7 @@
                 android:visibility="visible" />
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/attempts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/textView6"
@@ -218,8 +218,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/textView8"
-                android:layout_alignLeft="@+id/textView11"
-                android:layout_alignStart="@+id/textView11"
+                android:layout_alignLeft="@+id/attempts"
+                android:layout_alignStart="@+id/attempts"
                 android:background="#FFDAB9"
                 android:maxWidth="50dp"
                 android:minWidth="50dp"
