@@ -1,6 +1,5 @@
 package com.cmpe277.make24_lab1;
 
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -17,11 +16,10 @@ import android.view.ViewGroup;
  */
 public class ShowMeFragment extends DialogFragment {
 
-    public String solution;
+    //public String solution;
     ShowMeDialogListener mListener;
 
-    public ShowMeFragment(String solution) {
-        this.solution = solution;
+    public ShowMeFragment() {
         // Required empty public constructor
     }
 
@@ -43,14 +41,14 @@ public class ShowMeFragment extends DialogFragment {
             throw new ClassCastException(context.toString()
                     + " must implement NoticeDialogListener");
         }
-
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(this.solution)
+        //getArguments().get("solution");
+        builder.setMessage(getArguments().getString("solution"))
                 .setTitle("Solution!!")
                 .setPositiveButton("CANCEL", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -60,4 +58,12 @@ public class ShowMeFragment extends DialogFragment {
         // Create the AlertDialog object and return it
         return builder.create();
     }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        mListener.onDialogCancelClick(ShowMeFragment.this);
+    }
+
+
 }

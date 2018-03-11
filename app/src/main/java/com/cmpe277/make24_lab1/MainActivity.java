@@ -109,7 +109,10 @@ public class MainActivity extends AppCompatActivity
                                 int num3 = Integer.parseInt(number3.getText().toString());
                                 int num4 = Integer.parseInt(number4.getText().toString());
                                 String solution = MakeNumber.getSolution(num1,num2,num3,num4);
-                                DialogFragment showMeFragment = new ShowMeFragment(solution);
+                                DialogFragment showMeFragment = new ShowMeFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("solution", solution);
+                                showMeFragment.setArguments(bundle);
                                 showMeFragment.show(getFragmentManager(), "ShowMeFragment");
                                 drawerLayout.closeDrawers();
                                 return true;
