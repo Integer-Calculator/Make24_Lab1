@@ -1,20 +1,26 @@
 package com.cmpe277.make24_lab1;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.TextView;
 
 import com.cmpe277.make24_lab1.databinding.ActivityMainBinding;
+import com.cmpe277.make24_lab1.util.MakeNumber;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,141 +34,223 @@ public class MainActivity extends AppCompatActivity {
     Chronometer cmTimer;
     long elapsedTime;
     static int skippedAttempts = 0;
+    Button number1;
+    Button number2;
+    Button number3;
+    Button number4;
+    Button plus;
+    Button minus;
+    Button multiply;
+    Button divide;
+    Button done;
+    Button delete;
+    Button left;
+    Button right;
+    TextView expressionView;
+    TextView succeeded;
+    TextView skipped;
+    TextView attempts;
 
+    DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        //binding = DataBindingUtil.s
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         cmTimer = findViewById(R.id.timer);
+
+        number1 = findViewById(R.id.number_1);
+        number2 = findViewById(R.id.number_2);
+        number3 = findViewById(R.id.number_3);
+        number4 = findViewById(R.id.number_4);
+        plus = findViewById(R.id.plus);
+        minus = findViewById(R.id.minus);
+        multiply = findViewById(R.id.multiply);
+        divide = findViewById(R.id.divide);
+        done = findViewById(R.id.done);
+        delete = findViewById(R.id.delete);
+        left = findViewById(R.id.left);
+        right = findViewById(R.id.right);
+
+        expressionView = findViewById(R.id.expressionView);
+        succeeded = findViewById(R.id.succeeded);
+        attempts = findViewById(R.id.attempts);
+        skipped = findViewById(R.id.skipped);
+
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.show();
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+
         }
         //Set Succeeded Count to zero
-        binding.succeeded.setText("0");
-        binding.skipped.setText("0");
+        succeeded.setText("0");
+        skipped.setText("0");
         startNewGame();
 
 
-        binding.number1.setOnClickListener(new View.OnClickListener() {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        switch (menuItem.getItemId()) {
+                            case R.id.nav_show_me:
+                                menuItem.setChecked(true);
+                                int num1 = Integer.parseInt(number1.getText().toString());
+                                int num2 = Integer.parseInt(number2.getText().toString());
+                                int num3 = Integer.parseInt(number3.getText().toString());
+                                int num4 = Integer.parseInt(number4.getText().toString());
+                                String solution = MakeNumber.getSolution(num1,num2,num3,num4);
+                                DialogFragment showMeFragment = new ShowMeFragment(solution);
+                                showMeFragment.show(getFragmentManager(), "nav_show_me");
+                                drawerLayout.closeDrawers();
+                                cmTimer.stop();
+                                cmTimer.setText("00:00");
+                                timerResume = false;
+                                skipped.setText(String.valueOf(++skippedAttempts));
+                                startNewGame();
+                                return true;
+                            case R.id.nav_assign_numbers:
+                                menuItem.setChecked(true);
+                                //Add Assign_numbers Code Here
+                                drawerLayout.closeDrawers();
+                                return true;
+                            default:
+                                drawerLayout.closeDrawers();
+                                return true;
+                        }
+                    }
+                });
+
+
+
+
+
+
+        number1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.expressionView.append(binding.number1.getText());
-                binding.number1.setEnabled(false);
+                expressionView.append(number1.getText());
+                number1.setEnabled(false);
             }
 
         });
 
-        binding.number2.setOnClickListener(new View.OnClickListener() {
+        number2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.expressionView.append(binding.number2.getText());
-                binding.number2.setEnabled(false);
+                expressionView.append(number2.getText());
+                number2.setEnabled(false);
             }
 
         });
 
 
-        binding.number3.setOnClickListener(new View.OnClickListener() {
+        number3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.expressionView.append(binding.number3.getText());
-                binding.number3.setEnabled(false);
+                expressionView.append(number3.getText());
+                number3.setEnabled(false);
             }
         });
 
-        binding.number4.setOnClickListener(new View.OnClickListener() {
+        number4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.expressionView.append(binding.number4.getText());
-                binding.number4.setEnabled(false);
+                expressionView.append(number4.getText());
+                number4.setEnabled(false);
             }
         });
 
-        binding.left.setOnClickListener(new View.OnClickListener() {
+        left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.expressionView.append(binding.left.getText());
+                expressionView.append(left.getText());
             }
         });
 
-        binding.right.setOnClickListener(new View.OnClickListener() {
+        right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.expressionView.append(binding.right.getText());
-            }
-        });
-
-
-        binding.plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                binding.expressionView.append(binding.plus.getText());
+                expressionView.append(right.getText());
             }
         });
 
 
-        binding.minus.setOnClickListener(new View.OnClickListener() {
+        plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.expressionView.append(binding.minus.getText());
+                expressionView.append(plus.getText());
             }
         });
 
 
-        binding.divide.setOnClickListener(new View.OnClickListener() {
+        minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.expressionView.append(binding.divide.getText());
-            }
-        });
-
-        binding.multiply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                binding.expressionView.append(binding.multiply.getText());
+                expressionView.append(minus.getText());
             }
         });
 
 
-        binding.delete.setOnClickListener(new View.OnClickListener() {
+        divide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CharSequence existingText = binding.expressionView.getText();
+                expressionView.append(divide.getText());
+            }
+        });
+
+        multiply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                expressionView.append(multiply.getText());
+            }
+        });
+
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CharSequence existingText = expressionView.getText();
                 int len = existingText.length();
                 if (len >= 1) {
-                    binding.expressionView.setText(existingText.subSequence(0, len - 1));
+                    expressionView.setText(existingText.subSequence(0, len - 1));
                     char deletedChar = existingText.charAt(len - 1);
-                    if (binding.number1.getText().charAt(0) == deletedChar)
-                        binding.number1.setEnabled(true);
-                    else if (binding.number2.getText().charAt(0) == deletedChar)
-                        binding.number2.setEnabled(true);
-                    else if (binding.number3.getText().charAt(0) == deletedChar)
-                        binding.number3.setEnabled(true);
-                    else if (binding.number4.getText().charAt(0) == deletedChar)
-                        binding.number4.setEnabled(true);
+                    if (number1.getText().charAt(0) == deletedChar)
+                        number1.setEnabled(true);
+                    else if (number2.getText().charAt(0) == deletedChar)
+                        number2.setEnabled(true);
+                    else if (number3.getText().charAt(0) == deletedChar)
+                        number3.setEnabled(true);
+                    else if (number4.getText().charAt(0) == deletedChar)
+                        number4.setEnabled(true);
                 }
             }
         });
 
 
-        binding.done.setOnClickListener(new View.OnClickListener() {
+        done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String expression = binding.expressionView.getText().toString();
+                String expression = expressionView.getText().toString();
 
 
-                if (!binding.number1.isEnabled() && !binding.number2.isEnabled() && !binding.number3.isEnabled() && !binding.number4.isEnabled() && evaluateExpression(expression)) {
+                if (!number1.isEnabled() && !number2.isEnabled() && !number3.isEnabled() && !number4.isEnabled() && evaluateExpression(expression)) {
                     //Stop Timer
                     cmTimer.stop();
                     cmTimer.setText("00:00");
                     timerResume = false;
 
                     //Increment Succeeded
-                    int successCount = Integer.parseInt(binding.succeeded.getText().toString());
-                    binding.succeeded.setText(String.valueOf(++successCount));
+                    int successCount = Integer.parseInt(succeeded.getText().toString());
+                    succeeded.setText(String.valueOf(++successCount));
 
                     //Show Bingo
                     new AlertDialog.Builder(MainActivity.this)
@@ -176,8 +264,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }).show();
                 } else {
-                    int currentAttempts = Integer.parseInt(binding.attempts.getText().toString());
-                    binding.attempts.setText(String.valueOf(++currentAttempts));
+                    int currentAttempts = Integer.parseInt(attempts.getText().toString());
+                    attempts.setText(String.valueOf(++currentAttempts));
                     //Show SnackBar
                     Snackbar snackbar = Snackbar
                             .make(findViewById(android.R.id.content), "Incorrect. Please Try Again!!", Snackbar.LENGTH_LONG);
@@ -293,20 +381,20 @@ public class MainActivity extends AppCompatActivity {
         }
         Collections.shuffle(list);
 
-        binding.number1.setText(String.valueOf(list.get(0)));
-        binding.number1.setEnabled(true);
-        binding.number2.setText(String.valueOf(list.get(1)));
-        binding.number2.setEnabled(true);
-        binding.number3.setText(String.valueOf(list.get(2)));
-        binding.number3.setEnabled(true);
-        binding.number4.setText(String.valueOf(list.get(3)));
-        binding.number4.setEnabled(true);
+        number1.setText(String.valueOf(list.get(0)));
+        number1.setEnabled(true);
+        number2.setText(String.valueOf(list.get(1)));
+        number2.setEnabled(true);
+        number3.setText(String.valueOf(list.get(2)));
+        number3.setEnabled(true);
+        number4.setText(String.valueOf(list.get(3)));
+        number4.setEnabled(true);
 
         //Reset Expression View
-        binding.expressionView.setText("");
+        expressionView.setText("");
 
         //Reset Attempts
-        binding.attempts.setText("1");
+        attempts.setText("1");
 
         cmTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             public void onChronometerTick(Chronometer arg0) {
@@ -348,20 +436,24 @@ public class MainActivity extends AppCompatActivity {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.action_clear:
-                binding.expressionView.setText("");
-                binding.number1.setEnabled(true);
-                binding.number2.setEnabled(true);
-                binding.number3.setEnabled(true);
-                binding.number4.setEnabled(true);
+                expressionView.setText("");
+                number1.setEnabled(true);
+                number2.setEnabled(true);
+                number3.setEnabled(true);
+                number4.setEnabled(true);
                 return true;
             case R.id.action_skip:
                 //Stop Timer
                 cmTimer.stop();
                 cmTimer.setText("00:00");
                 timerResume = false;
-                binding.skipped.setText(String.valueOf(++skippedAttempts));
+                skipped.setText(String.valueOf(++skippedAttempts));
                 startNewGame();
                 return true;
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
