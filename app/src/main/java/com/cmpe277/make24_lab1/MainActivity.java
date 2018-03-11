@@ -3,6 +3,7 @@ package com.cmpe277.make24_lab1;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
@@ -19,7 +20,7 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
-import com.cmpe277.make24_lab1.databinding.ActivityMainBinding;
+//import com.cmpe277.make24_lab1.databinding.ActivityMainBinding;
 import com.cmpe277.make24_lab1.util.MakeNumber;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ import java.util.Stack;
 public class MainActivity extends AppCompatActivity
         implements ShowMeDialogListener{
 
-    ActivityMainBinding binding;
+  //  ActivityMainBinding binding;
     Boolean timerResume = false;
     Chronometer cmTimer;
     long elapsedTime;
@@ -91,7 +92,32 @@ public class MainActivity extends AppCompatActivity
         //Set Succeeded Count to zero
         succeeded.setText("0");
         skipped.setText("0");
-        startNewGame();
+
+
+        if (this.getIntent().getExtras() != null ) {
+            // intent is not null and your key is not null
+            Intent mIntent = getIntent();
+            int n1 = mIntent.getIntExtra("n1", -1);
+            int n2 = mIntent.getIntExtra("n2", -1);
+            int n3 = mIntent.getIntExtra("n3", -1);
+            int n4 = mIntent.getIntExtra("n4", -1);
+
+            Button btn = (Button) findViewById(R.id.number_1);
+            btn.setText(String.valueOf(n1));
+
+            Button btn1 = (Button) findViewById(R.id.number_2);
+            btn1.setText(String.valueOf(n2));
+
+            Button btn2 = (Button) findViewById(R.id.number_3);
+            btn2.setText(String.valueOf(n3));
+
+            Button btn3 = (Button) findViewById(R.id.number_4);
+            btn3.setText(String.valueOf(n4));
+        }
+        else
+        {
+            startNewGame();
+        }
 
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -119,6 +145,9 @@ public class MainActivity extends AppCompatActivity
                             case R.id.nav_assign_numbers:
                                 menuItem.setChecked(true);
                                 //Add Assign_numbers Code Here
+                                Intent intent = new Intent(MainActivity.this, AssignActivity.class);
+                                startActivity(intent);
+                                finish();
                                 drawerLayout.closeDrawers();
                                 return true;
                             default:
