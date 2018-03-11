@@ -4,6 +4,7 @@ package com.cmpe277.make24_lab1;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -17,6 +18,8 @@ import android.view.ViewGroup;
 public class ShowMeFragment extends DialogFragment {
 
     public String solution;
+    ShowMeDialogListener mListener;
+
     public ShowMeFragment(String solution) {
         this.solution = solution;
         // Required empty public constructor
@@ -30,6 +33,20 @@ public class ShowMeFragment extends DialogFragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            // Instantiate the NoticeDialogListener so we can send events to the host
+            mListener = (ShowMeDialogListener) context;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(context.toString()
+                    + " must implement NoticeDialogListener");
+        }
+
+    }
+
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -37,7 +54,7 @@ public class ShowMeFragment extends DialogFragment {
                 .setTitle("Solution!!")
                 .setPositiveButton("CANCEL", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ShowMeFragment.this.getDialog().cancel();
+                        mListener.onDialogCancelClick(ShowMeFragment.this);
                     }
                 });
         // Create the AlertDialog object and return it

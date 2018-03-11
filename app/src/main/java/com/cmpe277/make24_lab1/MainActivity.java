@@ -27,7 +27,8 @@ import java.util.Collections;
 import java.util.Stack;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements ShowMeDialogListener{
 
     ActivityMainBinding binding;
     Boolean timerResume = false;
@@ -109,13 +110,8 @@ public class MainActivity extends AppCompatActivity {
                                 int num4 = Integer.parseInt(number4.getText().toString());
                                 String solution = MakeNumber.getSolution(num1,num2,num3,num4);
                                 DialogFragment showMeFragment = new ShowMeFragment(solution);
-                                showMeFragment.show(getFragmentManager(), "nav_show_me");
+                                showMeFragment.show(getFragmentManager(), "ShowMeFragment");
                                 drawerLayout.closeDrawers();
-                                cmTimer.stop();
-                                cmTimer.setText("00:00");
-                                timerResume = false;
-                                skipped.setText(String.valueOf(++skippedAttempts));
-                                startNewGame();
                                 return true;
                             case R.id.nav_assign_numbers:
                                 menuItem.setChecked(true);
@@ -128,10 +124,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-
-
-
 
 
         number1.setOnClickListener(new View.OnClickListener() {
@@ -457,6 +449,16 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onDialogCancelClick(DialogFragment dialog) {
+        // User touched the dialog's cancel button
+        cmTimer.stop();
+        cmTimer.setText("00:00");
+        timerResume = false;
+        skipped.setText(String.valueOf(++skippedAttempts));
+        startNewGame();
     }
 
     @Override
