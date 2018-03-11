@@ -1,45 +1,47 @@
 package com.cmpe277.make24_lab1;
 import com.cmpe277.make24_lab1.databinding.ActivityMainBinding;
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
-import java.util.Timer;
-import java.util.TimerTask;
 import android.support.design.widget.Snackbar;
 import android.widget.Chronometer;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import static android.content.ContentValues.TAG;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity{
 
-
-    TimerTask mTimerTask;
-    private Handler handler = new Handler();
     ActivityMainBinding binding;
-    private int nCounter = 0;
-    Timer t = new Timer();
     Boolean timerResume = false;
     Chronometer cmTimer;
     long elapsedTime;
+    static int skippedAttempts=0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
-        cmTimer = (Chronometer) findViewById(R.id.timer);
-
+        cmTimer = findViewById(R.id.timer);
+        ActionBar ab = getSupportActionBar();
+        if(ab != null){ab.show();}
         //Set Succeeded Count to zero
         binding.succeeded.setText("0");
+        binding.skipped.setText("0");
         startNewGame();
 
 
@@ -147,7 +149,8 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 String expression = binding.expressionView.getText().toString();
 
-               if(evaluateExpression(expression)) {
+
+               if(!binding.number1.isEnabled() && !binding.number2.isEnabled() && !binding.number3.isEnabled() && !binding.number4.isEnabled() && evaluateExpression(expression)) {
                    //Stop Timer
                    cmTimer.stop();
                    cmTimer.setText("00:00");
@@ -372,6 +375,38 @@ public class MainActivity extends Activity {
     */
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_menu, menu);
+        return true;
+    }
 
+
+     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+     //   binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+     //   cmTimer = findViewById(R.id.timer);
+        switch(item.getItemId()) {
+            case R.id.action_clear:
+                binding.expressionView.setText("");
+                binding.number1.setEnabled(true);
+                binding.number2.setEnabled(true);
+                binding.number3.setEnabled(true);
+                binding.number4.setEnabled(true);
+                return true;
+            case R.id.action_skip:
+                //Stop Timer
+                cmTimer.stop();
+                cmTimer.setText("00:00");
+                timerResume=false;
+                binding.skipped.setText(String.valueOf(++skippedAttempts));
+                startNewGame();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
 
