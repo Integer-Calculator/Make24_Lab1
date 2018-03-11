@@ -17,6 +17,11 @@ import java.util.TimerTask;
 import android.support.design.widget.Snackbar;
 import android.widget.Chronometer;
 
+//delete after assign trial
+import android.widget.Button;
+import android.view.View.OnClickListener;
+import android.content.Intent;
+
 import static android.content.ContentValues.TAG;
 
 
@@ -40,7 +45,54 @@ public class MainActivity extends Activity {
 
         //Set Succeeded Count to zero
         binding.succeeded.setText("0");
-        startNewGame();
+
+
+
+        // code to assign numbers from intent
+
+        if (this.getIntent().getExtras() != null ) {
+            // intent is not null and your key is not null
+            Intent mIntent = getIntent();
+            int n1 = mIntent.getIntExtra("n1", -1);
+            int n2 = mIntent.getIntExtra("n2", -1);
+            int n3 = mIntent.getIntExtra("n3", -1);
+            int n4 = mIntent.getIntExtra("n4", -1);
+
+            Button btn = (Button) findViewById(R.id.number_1);
+            btn.setText(String.valueOf(n1));
+
+            Button btn1 = (Button) findViewById(R.id.number_2);
+            btn1.setText(String.valueOf(n2));
+
+            Button btn2 = (Button) findViewById(R.id.number_3);
+            btn2.setText(String.valueOf(n3));
+
+            Button btn3 = (Button) findViewById(R.id.number_4);
+            btn3.setText(String.valueOf(n4));
+
+//            Button assign = (Button) findViewById(R.id.assign);
+//            assign.setText("yay!!!!");
+
+
+        }
+        else
+        {
+//            Button assign = (Button) findViewById(R.id.assign);
+//            assign.setText("Nooooo!!!!");
+
+            startNewGame();
+        }
+
+        //    just trial code for assign button delete it in the final code
+        Button mondayEdit= (Button)findViewById(R.id.assign);
+        mondayEdit.setOnClickListener(new OnClickListener()
+        {   public void onClick(View v)
+        {
+            Intent intent = new Intent(MainActivity.this, AssignActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        });
 
 
         binding.number1.setOnClickListener(new View.OnClickListener(){

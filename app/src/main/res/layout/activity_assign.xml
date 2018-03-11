@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cmpe277.make24_lab1.AssignActivity">
+
+    <RelativeLayout
+        android:layout_width="375dp"
+        android:layout_height="472dp"
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="5dp">
+
+
+        <Button
+            android:id="@+id/assign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="61dp"
+            android:text="Assign"
+            tools:layout_editor_absoluteX="148dp"
+            tools:layout_editor_absoluteY="399dp" />
+
+        <NumberPicker
+            android:id="@+id/np1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="21dp"
+            android:layout_marginStart="21dp" />
+
+        <NumberPicker
+            android:id="@+id/np2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/np1"
+            android:layout_marginLeft="29dp"
+            android:layout_marginStart="29dp"
+            android:layout_toEndOf="@+id/np1"
+            android:layout_toRightOf="@+id/np1" />
+
+        <NumberPicker
+            android:id="@+id/np3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/np2"
+            android:layout_marginEnd="19dp"
+            android:layout_marginRight="19dp"
+            android:layout_toLeftOf="@+id/np4"
+            android:layout_toStartOf="@+id/np4" />
+
+        <NumberPicker
+            android:id="@+id/np4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/np3"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp" />
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/np1"
+            android:layout_alignLeft="@+id/np1"
+            android:layout_alignStart="@+id/np1"
+            android:layout_marginBottom="39dp"
+            android:maxWidth="60dp"
+            android:text="1st number:"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/np2"
+            android:layout_alignStart="@+id/np2"
+            android:layout_alignTop="@+id/tv1"
+            android:maxWidth="60dp"
+            android:text="2nd number:"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/np3"
+            android:layout_alignStart="@+id/np3"
+            android:layout_alignTop="@+id/tv2"
+            android:maxWidth="60dp"
+            android:text="3rd number:" />
+
+        <TextView
+            android:id="@+id/tv4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv3"
+            android:layout_alignLeft="@+id/np4"
+            android:layout_alignStart="@+id/np4"
+            android:maxWidth="60dp"
+            android:text="4th number:" />
+
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>
