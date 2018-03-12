@@ -13,17 +13,24 @@ import android.view.View;
 
 public class AssignActivity extends AppCompatActivity {
 
-    int n1 =-1,n2 =-1,n3 =-1,n4 =-1;
+    int n1 =1,n2 =1,n3 =1,n4 =1;
+    boolean n1_set = false;
+    boolean n2_set = false;
+    boolean n3_set = false;
+    boolean n4_set = false;
+
+    Button assign;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign);
-
+        assign= findViewById(R.id.assign);
+        assign.setEnabled(false);
 
         //on clicking assign button send numbers to main activity
-        Button mondayEdit= (Button)findViewById(R.id.assign);
-        mondayEdit.setOnClickListener(new OnClickListener()
+
+        assign.setOnClickListener(new OnClickListener()
         {   public void onClick(View v)
         {
             Intent intent = new Intent(AssignActivity.this, MainActivity.class);
@@ -57,10 +64,10 @@ public class AssignActivity extends AppCompatActivity {
 
         //Populate NumberPicker values from minimum and maximum value range
         //Set the minimum value of NumberPicker
-        np1.setMinValue(0);
-        np2.setMinValue(0);
-        np3.setMinValue(0);
-        np4.setMinValue(0);
+        np1.setMinValue(1);
+        np2.setMinValue(1);
+        np3.setMinValue(1);
+        np4.setMinValue(1);
         //Specify the maximum value/number of NumberPicker
         np1.setMaxValue(9);
         np2.setMaxValue(9);
@@ -80,6 +87,9 @@ public class AssignActivity extends AppCompatActivity {
                 //Display the newly selected number from picker
                 n1 = newVal;
                 tv1.setText("Selected Number : " + n1);
+                n1_set=true;
+                assign.setEnabled(n1_set&&n2_set&&n3_set&&n4_set);
+
             }
         });
 
@@ -89,6 +99,8 @@ public class AssignActivity extends AppCompatActivity {
                 //Display the newly selected number from picker
                 n2 = newVal;
                 tv2.setText("Selected Number : " + n2);
+                n2_set=true;
+                assign.setEnabled(n1_set&&n2_set&&n3_set&&n4_set);
             }
         });
         np3.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -97,6 +109,8 @@ public class AssignActivity extends AppCompatActivity {
                 //Display the newly selected number from picker
                 n3 = newVal;
                 tv3.setText("Selected Number : " + n3);
+                n3_set=true;
+                assign.setEnabled(n1_set&&n2_set&&n3_set&&n4_set);
             }
         });
         np4.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -105,6 +119,8 @@ public class AssignActivity extends AppCompatActivity {
                 //Display the newly selected number from picker
                 n4 = newVal;
                 tv4.setText("Selected Number : " + newVal);
+                n4_set=true;
+                assign.setEnabled(n1_set&&n2_set&&n3_set&&n4_set);
             }
         });
 

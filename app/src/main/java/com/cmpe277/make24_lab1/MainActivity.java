@@ -97,10 +97,10 @@ public class MainActivity extends AppCompatActivity
         if (this.getIntent().getExtras() != null ) {
             // intent is not null and your key is not null
             Intent mIntent = getIntent();
-            int n1 = mIntent.getIntExtra("n1", -1);
-            int n2 = mIntent.getIntExtra("n2", -1);
-            int n3 = mIntent.getIntExtra("n3", -1);
-            int n4 = mIntent.getIntExtra("n4", -1);
+            int n1 = mIntent.getIntExtra("n1", 1);
+            int n2 = mIntent.getIntExtra("n2", 1);
+            int n3 = mIntent.getIntExtra("n3", 1);
+            int n4 = mIntent.getIntExtra("n4", 1);
 
             Button btn = (Button) findViewById(R.id.number_1);
             btn.setText(String.valueOf(n1));
@@ -113,10 +113,11 @@ public class MainActivity extends AppCompatActivity
 
             Button btn3 = (Button) findViewById(R.id.number_4);
             btn3.setText(String.valueOf(n4));
+            startNewGame(false);
         }
         else
         {
-            startNewGame();
+            startNewGame(true);
         }
 
 
@@ -284,7 +285,7 @@ public class MainActivity extends AppCompatActivity
                             .setPositiveButton("Next Puzzle", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    startNewGame();
+                                    startNewGame(true);
                                 }
                             }).show();
                 } else {
@@ -397,21 +398,25 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    void startNewGame() {
-        // generate 4 random numbers
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        for (int i = 1; i < 10; i++) {
-            list.add(new Integer(i));
-        }
-        Collections.shuffle(list);
+    void startNewGame(boolean autoFlag) {
 
-        number1.setText(String.valueOf(list.get(0)));
+        if(autoFlag) {
+            // generate 4 random numbers
+            ArrayList<Integer> list = new ArrayList<Integer>();
+            for (int i = 1; i < 10; i++) {
+                list.add(new Integer(i));
+            }
+            Collections.shuffle(list);
+
+            number1.setText(String.valueOf(list.get(0)));
+            number2.setText(String.valueOf(list.get(1)));
+            number3.setText(String.valueOf(list.get(2)));
+            number4.setText(String.valueOf(list.get(3)));
+        }
+        //Enable buttons
         number1.setEnabled(true);
-        number2.setText(String.valueOf(list.get(1)));
         number2.setEnabled(true);
-        number3.setText(String.valueOf(list.get(2)));
         number3.setEnabled(true);
-        number4.setText(String.valueOf(list.get(3)));
         number4.setEnabled(true);
 
         //Reset Expression View
@@ -472,7 +477,7 @@ public class MainActivity extends AppCompatActivity
                 cmTimer.setText("00:00");
                 timerResume = false;
                 skipped.setText(String.valueOf(++skippedAttempts));
-                startNewGame();
+                startNewGame(true);
                 return true;
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
@@ -490,7 +495,7 @@ public class MainActivity extends AppCompatActivity
         cmTimer.setText("00:00");
         timerResume = false;
         skipped.setText(String.valueOf(++skippedAttempts));
-        startNewGame();
+        startNewGame(true);
     }
 
     @Override
