@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Make 24</string>
+    <string name="showMe">Show Me</string>
+    <string name="assignNumbers">Assign Numbers</string>
     <string name="done">Done</string>
 
     <!-- TODO: Remove or change this placeholder text -->

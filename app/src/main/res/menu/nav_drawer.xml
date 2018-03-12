@@ -3,9 +3,9 @@
 
         <item
             android:id="@+id/nav_show_me"
-            android:title="Show Me" />
+            android:title="@string/showMe" />
         <item
             android:id="@+id/nav_assign_numbers"
-            android:title="Assign Numbers" />
+            android:title="@string/assignNumbers" />
 
 </menu>

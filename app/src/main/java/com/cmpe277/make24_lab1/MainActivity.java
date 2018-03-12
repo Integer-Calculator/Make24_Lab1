@@ -486,9 +486,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             cmTimer.start();
         }
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -496,7 +494,6 @@ public class MainActivity extends AppCompatActivity
         inflater.inflate(R.menu.activity_menu, menu);
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
