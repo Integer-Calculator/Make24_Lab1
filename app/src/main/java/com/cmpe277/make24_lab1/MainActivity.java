@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity
         //Set Succeeded Count to zero
         succeeded.setText("0");
         skipped.setText("0");
-
+        done.setEnabled(false);
 
         if (this.getIntent().getExtras() != null ) {
             // intent is not null and your key is not null
@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 expressionView.append(number1.getText());
                 number1.setEnabled(false);
+                if(!done.isEnabled()) done.setEnabled(true);
             }
 
         });
@@ -173,6 +174,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 expressionView.append(number2.getText());
                 number2.setEnabled(false);
+                if(!done.isEnabled()) done.setEnabled(true);
             }
 
         });
@@ -183,6 +185,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 expressionView.append(number3.getText());
                 number3.setEnabled(false);
+                if(!done.isEnabled()) done.setEnabled(true);
             }
         });
 
@@ -191,6 +194,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 expressionView.append(number4.getText());
                 number4.setEnabled(false);
+                if(!done.isEnabled()) done.setEnabled(true);
             }
         });
 
@@ -198,6 +202,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 expressionView.append(left.getText());
+                if(!done.isEnabled()) done.setEnabled(true);
             }
         });
 
@@ -212,6 +217,12 @@ public class MainActivity extends AppCompatActivity
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String curExpression = expressionView.getText().toString();
+                if(!curExpression.isEmpty()){
+                    if(curExpression.charAt(curExpression.length() - 1)=='+'){
+                        done.setEnabled(false);
+                    }
+                }
                 expressionView.append(plus.getText());
             }
         });
@@ -220,6 +231,12 @@ public class MainActivity extends AppCompatActivity
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String curExpression = expressionView.getText().toString();
+                if(!curExpression.isEmpty()){
+                    if(curExpression.charAt(curExpression.length() - 1)=='-'){
+                        done.setEnabled(false);
+                    }
+                }
                 expressionView.append(minus.getText());
             }
         });
@@ -228,6 +245,12 @@ public class MainActivity extends AppCompatActivity
         divide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String curExpression = expressionView.getText().toString();
+                if(!curExpression.isEmpty()){
+                    if(curExpression.charAt(curExpression.length() - 1)=='/'){
+                        done.setEnabled(false);
+                    }
+                }
                 expressionView.append(divide.getText());
             }
         });
@@ -235,6 +258,12 @@ public class MainActivity extends AppCompatActivity
         multiply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String curExpression = expressionView.getText().toString();
+                if(!curExpression.isEmpty()){
+                    if(curExpression.charAt(curExpression.length() - 1)=='*'){
+                        done.setEnabled(false);
+                    }
+                }
                 expressionView.append(multiply.getText());
             }
         });
@@ -257,6 +286,7 @@ public class MainActivity extends AppCompatActivity
                     else if (number4.getText().charAt(0) == deletedChar)
                         number4.setEnabled(true);
                 }
+                done.setEnabled(true);
             }
         });
 
@@ -313,13 +343,15 @@ public class MainActivity extends AppCompatActivity
         // Stack for Operators: 'ops'
         Stack<Character> ops = new Stack<Character>();
 
-        for (int i = 0; i < tokens.length; i++) {
-            // Current token is a whitespace, skip it
-            if (tokens[i] == ' ')
-                continue;
+        try {
 
-            // Current token is a number, push it to stack for numbers
-            if (tokens[i] >= '1' && tokens[i] <= '9') {
+            for (int i = 0; i < tokens.length; i++) {
+                // Current token is a whitespace, skip it
+                if (tokens[i] == ' ')
+                    continue;
+
+                // Current token is a number, push it to stack for numbers
+                if (tokens[i] >= '1' && tokens[i] <= '9') {
                       /*  StringBuffer sbuf = new StringBuffer();
                         // There may be more than one digits in number
                         while (i < tokens.length && tokens[i] >= '1' && tokens[i] <= '9')
@@ -327,43 +359,49 @@ public class MainActivity extends AppCompatActivity
                         values.push(Integer.parseInt(sbuf.toString()));
                         */
 
-                values.push(Integer.parseInt(Character.toString(tokens[i])));
+                    values.push(Integer.parseInt(Character.toString(tokens[i])));
+                }
+
+                // Current token is an opening brace, push it to 'ops'
+                else if (tokens[i] == '(')
+                    ops.push(tokens[i]);
+
+                    // Closing brace encountered, solve entire brace
+                else if (tokens[i] == ')') {
+                    while (ops.peek() != '(')
+                        values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+                    ops.pop();
+                }
+
+                // Current token is an operator.
+                else if (tokens[i] == '+' || tokens[i] == '-' ||
+                        tokens[i] == '*' || tokens[i] == '/') {
+                    // While top of 'ops' has same or greater precedence to current
+                    // token, which is an operator. Apply operator on top of 'ops'
+                    // to top two elements in values stack
+                    while (!ops.empty() && hasPrecedence(tokens[i], ops.peek()))
+                        values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+
+                    // Push current token to 'ops'.
+                    ops.push(tokens[i]);
+                }
             }
 
-            // Current token is an opening brace, push it to 'ops'
-            else if (tokens[i] == '(')
-                ops.push(tokens[i]);
+            // Entire expression has been parsed at this point, apply remaining
+            // ops to remaining values
+            while (!ops.empty())
+                values.push(applyOp(ops.pop(), values.pop(), values.pop()));
 
-                // Closing brace encountered, solve entire brace
-            else if (tokens[i] == ')') {
-                while (ops.peek() != '(')
-                    values.push(applyOp(ops.pop(), values.pop(), values.pop()));
-                ops.pop();
-            }
-
-            // Current token is an operator.
-            else if (tokens[i] == '+' || tokens[i] == '-' ||
-                    tokens[i] == '*' || tokens[i] == '/') {
-                // While top of 'ops' has same or greater precedence to current
-                // token, which is an operator. Apply operator on top of 'ops'
-                // to top two elements in values stack
-                while (!ops.empty() && hasPrecedence(tokens[i], ops.peek()))
-                    values.push(applyOp(ops.pop(), values.pop(), values.pop()));
-
-                // Push current token to 'ops'.
-                ops.push(tokens[i]);
-            }
+            // Top of 'values' contains result, return it
+            int result = values.pop();
+            System.out.println(result);
+            return (result == 24);
+        }
+        catch (Exception e){
+            System.out.println();
+            return false;
         }
 
-        // Entire expression has been parsed at this point, apply remaining
-        // ops to remaining values
-        while (!ops.empty())
-            values.push(applyOp(ops.pop(), values.pop(), values.pop()));
-
-        // Top of 'values' contains result, return it
-        int result = values.pop();
-        System.out.println(result);
-        return (result == 24);
     }
 
 
@@ -470,6 +508,7 @@ public class MainActivity extends AppCompatActivity
                 number2.setEnabled(true);
                 number3.setEnabled(true);
                 number4.setEnabled(true);
+                done.setEnabled(false);
                 return true;
             case R.id.action_skip:
                 //Stop Timer
