@@ -285,13 +285,13 @@ public class MainActivity extends AppCompatActivity
                 if (len >= 1) {
                     expressionView.setText(existingText.subSequence(0, len - 1));
                     char deletedChar = existingText.charAt(len - 1);
-                    if (number1.getText().charAt(0) == deletedChar)
+                    if (number1.getText().charAt(0) == deletedChar && !number1.isEnabled())
                         number1.setEnabled(true);
-                    else if (number2.getText().charAt(0) == deletedChar)
+                    else if (number2.getText().charAt(0) == deletedChar && !number2.isEnabled())
                         number2.setEnabled(true);
-                    else if (number3.getText().charAt(0) == deletedChar)
+                    else if (number3.getText().charAt(0) == deletedChar && !number3.isEnabled())
                         number3.setEnabled(true);
-                    else if (number4.getText().charAt(0) == deletedChar)
+                    else if (number4.getText().charAt(0) == deletedChar && !number4.isEnabled())
                         number4.setEnabled(true);
                 }
                 done.setEnabled(true);
