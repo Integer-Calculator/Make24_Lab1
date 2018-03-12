@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity
     Chronometer cmTimer;
     long elapsedTime;
     static int skippedAttempts = 0;
+    static int successCount = 0;
     Button number1;
     Button number2;
     Button number3;
@@ -89,10 +90,7 @@ public class MainActivity extends AppCompatActivity
             ab.setHomeAsUpIndicator(R.drawable.ic_menu);
 
         }
-        //Set Succeeded Count to zero
-        succeeded.setText("0");
-        skipped.setText("0");
-        done.setEnabled(false);
+
 
         if (this.getIntent().getExtras() != null ) {
             // intent is not null and your key is not null
@@ -114,9 +112,19 @@ public class MainActivity extends AppCompatActivity
             Button btn3 = (Button) findViewById(R.id.number_4);
             btn3.setText(String.valueOf(n4));
             startNewGame(false);
+
+            // increment skipped by 1
+            skipped.setText(String.valueOf(++skippedAttempts));
+            succeeded.setText(String.valueOf(successCount));
+
         }
         else
         {
+            //Set Succeeded Count to zero
+            succeeded.setText("0");
+            skipped.setText("0");
+            done.setEnabled(false);
+
             startNewGame(true);
         }
 
@@ -304,7 +312,7 @@ public class MainActivity extends AppCompatActivity
                     timerResume = false;
 
                     //Increment Succeeded
-                    int successCount = Integer.parseInt(succeeded.getText().toString());
+                    successCount = Integer.parseInt(succeeded.getText().toString());
                     succeeded.setText(String.valueOf(++successCount));
 
                     //Show Bingo
